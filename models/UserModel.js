@@ -1,27 +1,29 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 
-const Event = mongoose.model('User', new mongoose.Schema({
-    name: { 
-        type: String, 
+const User = mongoose.model('User', new mongoose.Schema({
+
+    name: {
+        type: String,
         required: true
-    }, 
-    email: { 
-        type: String, 
+    },
+    email: {
+        type: String,
         required: true,
         unique: true
-    }, 
-    password: { 
-        type: String, 
+    },
+    password: {
+        type: String,
         required: true
-    }, 
+    },
     role: {
         type: String,
         default: "User"
     },
-},   
-    {
-        timestamps: true
+    date: {
+        type: Date,
+        default: Date.now
     }
-))
+    
+}))
 
-module.exports = Event; 
+module.exports = User
