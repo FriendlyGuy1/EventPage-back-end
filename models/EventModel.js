@@ -18,7 +18,7 @@ const Event = mongoose.model('Event', new mongoose.Schema({
         required: true
     },
     date: {
-        type: String,
+        type: Date,
         required: true
     },
     image: {

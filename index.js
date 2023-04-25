@@ -14,6 +14,8 @@ app.use("/api/user", require("./routes/UserRoutes"))
 
 app.use("/api/categories", require("./routes/CategoryRoutes"))
 
+app.use('/api/favorites', require('./routes/FavoritesRoutes'));
+
 app.use('/api/events', require('./routes/EventRoutes'));
 
 
