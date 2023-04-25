@@ -8,13 +8,9 @@ const app = express();
 app.use(express.json());
 
 
-const {
-    registerUser,
-} = require('./controllers/UserController');
-
-app.post('/api/user', registerUser);
 
 
+app.use("/api/user", require("./routes/UserRoutes"))
 
 app.use("/api/categories", require("./routes/CategoryRoutes"))
 
