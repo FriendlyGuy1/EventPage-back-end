@@ -8,6 +8,13 @@ const app = express();
 app.use(express.json());
 
 
+const {
+    registerUser,
+} = require('./controllers/UserController');
+
+app.post('/api/user', registerUser);
+
+
 app.use('/api/events', require('./routes/EventRoutes'));
 
 
