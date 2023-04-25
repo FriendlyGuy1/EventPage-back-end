@@ -18,6 +18,7 @@ const setEvent = asyncHandler(async (req, res) => {
     res.status(400).send({
       error: "Please fill in all the fields",
     });
+    return
   }
   const event = await Event.create({
     title: req.body.title,
@@ -39,7 +40,7 @@ const getEvents = asyncHandler(async (req, res) => {
 
   if (events == "") {
     res.status(400).send({
-      error: "There are not events",
+      error: "There are no events",
     });
   }
 
@@ -59,6 +60,7 @@ const updateEvent = asyncHandler(async (req, res) => {
       res.status(400).send({
         error: "Event does not exist",
       });
+      return
     }
 
     const updateEvent = await Event.findByIdAndUpdate(req.params.id, req.body, {
@@ -85,6 +87,7 @@ const deleteEvent = asyncHandler(async (req, res) => {
       res.status(400).send({
         error: "Event does not exist",
       });
+      return
     }
 
     await event.deleteOne();
