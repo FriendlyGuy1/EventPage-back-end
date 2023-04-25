@@ -4,7 +4,11 @@ const Category = mongoose.model('Category', new mongoose.Schema({
     category: { 
         type: String, 
         required: true
-    }, 
+    },
+    createAt: { 
+        type: Date, 
+        default: Date.now
+    },  
 }))
 
 module.exports = Category; 
