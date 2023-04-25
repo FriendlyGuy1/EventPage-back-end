@@ -15,6 +15,9 @@ const {
 app.post('/api/user', registerUser);
 
 
+
+app.use("/api/categories", require("./routes/CategoryRoutes"))
+
 app.use('/api/events', require('./routes/EventRoutes'));
 
 
