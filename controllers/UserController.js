@@ -37,4 +37,28 @@ const registerUser = asyncHandler(async(req, res) => {
    
 })
 
-module.exports = {registerUser}
+
+
+const loginUser = asyncHandler(async(req, res) => {
+
+    const { email, password } = req.body
+
+    const user = await User.findOne({ email, password });
+    
+    if (user) {
+        res.status(201).json({
+            _id: user.id,
+            name: user.name,
+            email: user.email,
+            password: user.password
+        })
+    }
+    else {
+        res.status(400)
+        throw new Error('Invalid credentials')
+    }
+})
+
+
+
+module.exports = {registerUser, loginUser}
