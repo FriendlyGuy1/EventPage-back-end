@@ -28,7 +28,8 @@ const registerUser = asyncHandler(async(req, res) => {
             _id: user.id,
             name: user.name,
             email: user.email,
-            password: user.password
+            password: user.password,
+            role: user.role
         })
     } else {
         res.status(400)
@@ -50,7 +51,8 @@ const loginUser = asyncHandler(async(req, res) => {
             _id: user.id,
             name: user.name,
             email: user.email,
-            password: user.password
+            password: user.password,
+            role: user.role
         })
     }
     else {
