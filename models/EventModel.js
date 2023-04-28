@@ -25,6 +25,11 @@ const Event = mongoose.model('Event', new mongoose.Schema({
         type: String,
         required: true
     },
+    // user: {
+    //     type: mongoose.Types.ObjectId,
+    //     required: true,
+    //     ref: 'User'
+    // },
     createAt: { 
         type: Date, 
         default: Date.now
