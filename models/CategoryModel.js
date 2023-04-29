@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 const Category = mongoose.model('Category', new mongoose.Schema({
     category: { 
         type: String, 
-        required: true
+        required: true,
+        unique: true,
     },
     createAt: { 
         type: Date, 
