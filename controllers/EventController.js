@@ -27,6 +27,7 @@ const setEvent = asyncHandler(async (req, res) => {
     place: req.body.place,
     date: req.body.date,
     image: req.body.image,
+    user: req.user.id
   });
   res.status(200).json(event);
 });
@@ -62,11 +63,26 @@ const updateEvent = asyncHandler(async (req, res) => {
       });
       return
     }
+    if (!req.user) {
+      res.status(401)
+      throw new Error('User not found')
+    }
 
-    const updateEvent = await Event.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
+    // checks if user is admin or the creator
+    if (event.user.toString() !== req.user.id && req.user.role !== "admin"){
+      res.status(401);
+      throw new Error("Not authorized");
+   }
+
+   if (req.user.role === "admin" || event.user.toString() === req.user.id){
+    const updateEvent = await Event.findByIdAndUpdate(req.params.id, req.body ,{
+        new: true
+        
+    })
     res.status(200).json(updateEvent);
+  }
+
+
   } else {
     res.status(400).send({
       error: "Event id is typed incorrectly",
@@ -88,6 +104,12 @@ const deleteEvent = asyncHandler(async (req, res) => {
         error: "Event does not exist",
       });
       return
+    }
+
+    // checks if the user craeted this event
+    if (event.user.toString() !== req.user.id) {
+      res.status(401)
+      throw new Error('User not authorized')
     }
 
     await event.deleteOne();

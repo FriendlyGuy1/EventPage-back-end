@@ -8,8 +8,9 @@ const {
     deleteCategory,
 } = require("../controllers/CategoryController")
 
+const { protectAdmin } = require("../middleware/adminAuthMiddleware")
 
-router.route('/').get(getCategories).post(addCategory);
-router.route('/:id').put(updateCategory).delete(deleteCategory);
+router.route('/').get(getCategories).post(protectAdmin, addCategory);
+router.route('/:id').put(protectAdmin, updateCategory).delete(protectAdmin, deleteCategory);
 
 module.exports = router;
