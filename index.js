@@ -20,7 +20,6 @@ app.use((req, res, next) => {
 
 
 
-
 app.use("/api/user", require("./routes/UserRoutes"))
 
 app.use("/api/categories", require("./routes/CategoryRoutes"))
@@ -31,6 +30,7 @@ app.use('/api/events', require('./routes/EventRoutes'));
 
 app.post("/api/uploadImage", (req, res) => {
     uploadImage(req.body.image)
+      .then((url) => res.send(url))
       .catch((err) => res.status(500).send(err));
 });
   
