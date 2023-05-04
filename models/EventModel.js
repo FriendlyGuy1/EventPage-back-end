@@ -30,6 +30,10 @@ const Event = mongoose.model('Event', new mongoose.Schema({
         required: true,
         ref: 'User'
     },
+    favorites: {
+        type: Number,
+        default: 0
+    },
     createAt: { 
         type: Date, 
         default: Date.now
