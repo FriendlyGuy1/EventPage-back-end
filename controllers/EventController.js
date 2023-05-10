@@ -4,7 +4,7 @@ const Event = require("../models/EventModel");
 
 // @desc Set event
 // @route POST /api/events
-// @access PUBLIC
+// @access PRIVATE
 
 const setEvent = asyncHandler(async (req, res) => {
   if (
@@ -37,7 +37,7 @@ const setEvent = asyncHandler(async (req, res) => {
 // @access PUBLIC
 
 const getEvents = asyncHandler(async (req, res) => {
-  const events = await Event.find({});
+  const events = await Event.find(); // { approved: true}, kai veiks admin approvinimas
 
   if (events == "") {
     res.status(400).send({
@@ -74,6 +74,12 @@ const updateEvent = asyncHandler(async (req, res) => {
       throw new Error("Not authorized");
    }
 
+   // checks if user tries to change approval
+    if(req.body.approved && req.user.role !== "admin"){
+      res.status(401);
+      throw new Error("You can't change the approval");
+   }
+
    if (req.user.role === "admin" || event.user.toString() === req.user.id){
     const updateEvent = await Event.findByIdAndUpdate(req.params.id, req.body ,{
         new: true
@@ -106,13 +112,16 @@ const deleteEvent = asyncHandler(async (req, res) => {
       return
     }
 
-    // checks if the user craeted this event
-    if (event.user.toString() !== req.user.id) {
+    
+    // checks if user is admin or the creator
+    if (event.user.toString() !== req.user.id && req.user.role !== "admin") {
       res.status(401)
       throw new Error('User not authorized')
     }
 
-    await event.deleteOne();
+    if (req.user.role === "admin" || event.user.toString() === req.user.id){
+      await event.deleteOne();
+    }
 
     res.status(200).json({
       success: `Event with id ${req.params.id} got deleted`,
@@ -124,9 +133,58 @@ const deleteEvent = asyncHandler(async (req, res) => {
   }
 });
 
+
+// @desc admin approves the event
+// @route GET /api/events/approve/:id
+// @access PRIVATE
+
+const approveEvent = asyncHandler( async(req,res)=> {
+  const event = await Event.findById(req.params.id)
+
+  // checks if event exists
+  if (!event) {
+    res.status(400)
+    throw new Error('Event not found')
+  }
+
+  // makes the event approved
+  const updateEvent = await Event.findByIdAndUpdate(req.params.id,{
+    approved: true,
+    new: true
+  })
+
+
+  res.status(200).json(updateEvent)
+})
+
+
+// @desc admin disapproves the event
+// @route GET /api/events/disapprove/:id
+// @access PRIVATE
+
+const disapproveEvent = asyncHandler( async(req,res)=> {
+  const event = await Event.findById(req.params.id)
+
+  // checks if event exists
+  if (!event) {
+    res.status(400)
+    throw new Error('Event not found')
+  }
+
+  // makes the event not approved
+  const updateEvent = await Event.findByIdAndUpdate(req.params.id,{
+    approved: false,
+    new: true
+  })
+
+  res.status(200).json(updateEvent)
+})
+
 module.exports = {
   setEvent,
   getEvents,
   updateEvent,
   deleteEvent,
+  approveEvent,
+  disapproveEvent,
 };
