@@ -34,6 +34,10 @@ const Event = mongoose.model('Event', new mongoose.Schema({
         type: Number,
         default: 0
     },
+    approved: {
+        type: Boolean,
+        default: false
+    },
     createAt: { 
         type: Date, 
         default: Date.now
