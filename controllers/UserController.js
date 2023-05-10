@@ -1,4 +1,5 @@
 const User = require('../models/UserModel')
+const Event = require("../models/EventModel")
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const asyncHandler = require('express-async-handler')
@@ -67,6 +68,65 @@ const loginUser = asyncHandler(async(req, res) => {
     }
 })
 
+// @desc Get users data
+// @route GET /api/user/list
+// @access PRIVATE
+
+const getUsers = asyncHandler(async (req, res) => {
+    const users = await User.aggregate([
+      {
+        $lookup: {
+          from: "events",
+          localField: "_id",
+          foreignField: "user",
+          as: "events"
+        }
+      },
+      {
+        $match: { role: { $in: ["User", "admin"] } }
+      },
+      {
+        $unset: [
+          "password",
+          "createdAt",
+          "updatedAt",
+          "events.createdAt",
+          "events.updatedAt",
+          "events.__v",
+          "__v"
+        ]
+      }
+    ])
+  
+    res.status(200).json(users)
+  })
+
+// @desc Delete user
+// @route DELETE /api/user/remove/:id
+// @access PRIVATE
+
+const deleteUser = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.params.id);
+    const events = await Event.find({user: req.params.id})
+
+    if (!user) {
+        res.status(400).send({
+          error: "User does not exist",
+        });
+        return
+    }
+
+    //deletes users events if he had any
+    if(!events == ""){
+        await Event.deleteMany({user: req.params.id})
+    }
+    
+    await user.deleteOne()
+
+    res.status(200).json(user)
+  })
+
+
 const generateToken = id => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
       expiresIn: '30d'
@@ -75,4 +135,9 @@ const generateToken = id => {
 
 
 
-module.exports = {registerUser, loginUser}
+module.exports = {
+    registerUser, 
+    loginUser,
+    getUsers,
+    deleteUser
+}
