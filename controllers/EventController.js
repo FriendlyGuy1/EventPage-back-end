@@ -37,7 +37,7 @@ const setEvent = asyncHandler(async (req, res) => {
 // @access PUBLIC
 
 const getEvents = asyncHandler(async (req, res) => {
-  const events = await Event.find(); // { approved: true}, kai veiks admin approvinimas
+  const events = await Event.find(); 
 
   if (events == "") {
     res.status(400).send({
@@ -133,58 +133,9 @@ const deleteEvent = asyncHandler(async (req, res) => {
   }
 });
 
-
-// @desc admin approves the event
-// @route GET /api/events/approve/:id
-// @access PRIVATE
-
-const approveEvent = asyncHandler( async(req,res)=> {
-  const event = await Event.findById(req.params.id)
-
-  // checks if event exists
-  if (!event) {
-    res.status(400)
-    throw new Error('Event not found')
-  }
-
-  // makes the event approved
-  const updateEvent = await Event.findByIdAndUpdate(req.params.id,{
-    approved: true,
-    new: true
-  })
-
-
-  res.status(200).json(updateEvent)
-})
-
-
-// @desc admin disapproves the event
-// @route GET /api/events/disapprove/:id
-// @access PRIVATE
-
-const disapproveEvent = asyncHandler( async(req,res)=> {
-  const event = await Event.findById(req.params.id)
-
-  // checks if event exists
-  if (!event) {
-    res.status(400)
-    throw new Error('Event not found')
-  }
-
-  // makes the event not approved
-  const updateEvent = await Event.findByIdAndUpdate(req.params.id,{
-    approved: false,
-    new: true
-  })
-
-  res.status(200).json(updateEvent)
-})
-
 module.exports = {
   setEvent,
   getEvents,
   updateEvent,
   deleteEvent,
-  approveEvent,
-  disapproveEvent,
 };
