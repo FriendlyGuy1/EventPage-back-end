@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 
 const Event = require("../models/EventModel");
+const Favorite = require("../models/FavoritesModel")
 
 // @desc Set event
 // @route POST /api/events
@@ -104,6 +105,7 @@ const deleteEvent = asyncHandler(async (req, res) => {
   //check if id is correct
   if (req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
     const event = await Event.findById(req.params.id);
+    const favorites = await Favorite.find({eventID: req.params.id})
 
     if (!event) {
       res.status(400).send({
@@ -126,6 +128,12 @@ const deleteEvent = asyncHandler(async (req, res) => {
     res.status(200).json({
       success: `Event with id ${req.params.id} got deleted`,
     });
+
+    if(!favorites == ""){
+      await Favorite.deleteMany({eventID: req.params.id})
+  }
+
+
   } else {
     res.status(400).send({
       error: "Event id is typed incorrectly",
